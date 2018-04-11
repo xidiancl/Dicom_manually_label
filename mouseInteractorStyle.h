@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkCellPicker.h>
 #include <iostream>
 
 using namespace std;
@@ -22,7 +23,13 @@ public:
 		up_pos[0] = this->GetInteractor()->GetEventPosition()[0];
 		up_pos[1] = this->GetInteractor()->GetEventPosition()[1];
 		if (up_pos[0] == down_pos[0] && up_pos[1] == down_pos[1]) {
-			cout << "!!!" << endl;
+			vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+			picker->SetTolerance(0.001);
+			picker->Pick(down_pos[0], down_pos[1], 0, this->GetDefaultRenderer());
+			int cell_id = picker->GetCellId();
+			if (cell_id != -1) {
+				cout << cell_id << endl;
+			}
 		}
 		vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
 	}
